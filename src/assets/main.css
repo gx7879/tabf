@@ -1,5 +1,5 @@
 @import './base.css';
 
 #app {
-    @apply min-h-screen flex flex-col;
+  @apply min-h-screen flex flex-col;
 }

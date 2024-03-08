@@ -5,15 +5,19 @@ import { RouterLink, RouterView } from 'vue-router'
 <template>
   <header class="px-8 py-5 relative bg-white flex justify-between items-center border border-light-gray">
     <img alt="Vue logo" class="logo" src="@/assets/images/logo.png" width="200" />
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+    <div v-if="$route.path !== '/login'" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
       <span
         class="border border-success-medium text-success-medium rounded-full pr-1.5 pl-4 text-xs relative before:absolute before:rounded-full before:w-1.5 before:h-1.5 before:bg-success-medium before:left-1.5 before:top-1/2 before:-translate-y-1/2">online</span>
     </div>
-    <div class="flex items-center space-x-3">
-      <div
-        class="hover:border-black/20 rounded px-4 py-3 cursor-pointer"
-        :class="{'bg-main text-white':$route.path === '/login', 'border border-main': $route.path !== '/login'}"
-        @click="signOut">
+    <div class="flex items-center space-x-4 text-sm font-medium">
+      <ul class="flex items-center  space-x-4 font-semibold">
+        <li>最新活動</li>
+        <li>個人專區</li>
+      </ul>
+      <div class="hover:border-black/20 rounded px-4 py-3 cursor-pointer" :class="{
+      'bg-main text-white': $route.path === '/login',
+      'border border-main': $route.path !== '/login'
+    }" @click="signOut">
         登入
       </div>
       <!-- <div class="relative inline-block text-left">
