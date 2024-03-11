@@ -51,6 +51,17 @@
             <!-- </router-link> -->
             <!-- <div class="rounded-full bg-primary-medium px-4 py-3 text-white cursor-pointer">進入活動</div> -->
           </div>
+          <div class="flex justify-between items-center bg-white px-6 py-4 border-b border-light-gray last:border-0">
+            <div class="text-sm flex items-center font-medium">
+              <div class="w-1 h-6 bg-main mr-4"></div>
+              2024/03/06&nbsp;&nbsp;14:00~16:00
+              <span class="text-sm ml-8 text-main font-semibold">2023 第一季 攻擊演練與數位鑑識競賽</span>
+            </div>
+            <button type="button" class="rounded bg-main px-4 py-3 text-white cursor-pointer hover:bg-primary-dark"
+              @click="goActivity">
+              進入活動
+            </button>
+          </div>
         </div>
       </div>
     </div>
