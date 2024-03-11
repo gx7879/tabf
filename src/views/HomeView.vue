@@ -45,7 +45,7 @@
             <!-- <router-link v-slot="{ navigate }" :to="{ name: 'activity', params: { activityId: item.activity_id } }"
               custom> -->
             <button type="button" class="rounded bg-main px-4 py-3 text-white cursor-pointer hover:bg-primary-dark"
-              @click="navigate">
+              @click="goActivity">
               進入活動
             </button>
             <!-- </router-link> -->
@@ -113,6 +113,9 @@ export default {
       }
       this.editStatus = !this.editStatus;
     },
+    goActivity() {
+      this.$router.push('/activity')
+    }
   },
 };
 </script>

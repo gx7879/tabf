@@ -52,7 +52,8 @@ import { RouterLink, RouterView } from 'vue-router'
         </select> -->
     </div>
   </header>
-  <main class="flex-1" :class="{ flex: $route.path === '/login' }">
+  <main class="flex-1"
+    :class="{ flex: $route.path === '/login', 'bg-[url(@/assets/images/bg.png)] bg-cover bg-no-repeat bg-center': $route.path !== '/login' }">
     <RouterView />
   </main>
   <footer class="bg-main py-4 text-center text-white">
