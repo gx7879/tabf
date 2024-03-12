@@ -73,7 +73,10 @@
         </template>
       </div>
       <h2 class="text-2xl font-semibold mb-3">我的連線資訊</h2>
-      <div class="bg-main text-white px-4 py-2 h-14 text-sm font-semibold cursor-pointer flex justify-between items-center" :class="{'rounded-t-lg': isInfoCollapse,'rounded-lg': !isInfoCollapse}" @click="isInfoCollapse = !isInfoCollapse">
+      <div
+        class="bg-main text-white px-4 py-2 h-14 text-sm font-semibold cursor-pointer flex justify-between items-center"
+        :class="{ 'rounded-t-lg': isInfoCollapse, 'rounded-lg': !isInfoCollapse }"
+        @click="isInfoCollapse = !isInfoCollapse">
         123
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
           class="w-6 h-6" :class="{ 'rotate-180': isRankCollapse === i }">
@@ -121,14 +124,14 @@
         若答題有困難，可以考慮使用「提示」功能，但每一次使用「提示」皆會扣分，並根據題目難易度不同，扣分比重也會有所不同。
       </span>
       <div class="border border-light-gray shadow-[0_4px_24px_0_rgba(30,50,50,0.12)] rounded-lg overflow-hidden">
-        <div class="flex px-6 py-4 gap-[15px] bg-white border-b border-light-gray" :class="{ 'bg-main': start }">
+        <div class="flex px-6 py-4 gap-[15px] border-b border-light-gray" :class="{ 'bg-main': start, 'bg-white': !start }">
           <input v-model="answer" type="text" placeholder="請輸入答案 ..."
-            class="bg-light-gray rounded pl-3 flex-1 border-[#DEE2EB] focus:border-primary-dark focus:ring-primary-dark" />
+            class="rounded pl-3 flex-1 focus:border-primary-dark focus:ring-primary-dark"
+            :class="{ 'bg-white border border-[#DEE2EB]': start, 'bg-light-gray': !start }" />
           <button type="button" class="rounded px-3 text-center py-3" :class="{
           'bg-white text-font-black': start,
           'bg-black/20 cursor-default text-white': !start,
-        }
-          " @click="submitAnswer">
+        }" @click="submitAnswer">
             提交答案
           </button>
         </div>
@@ -226,7 +229,7 @@ const awardsImg = (index) => {
 }
 const confirmHint = () => { }
 const start = computed(() => {
-  return false
+  return true
 })
 </script>
 
