@@ -1,33 +1,47 @@
 <template>
   <div v-if="show" class="bg-black/[.68] fixed top-0 bottom-0 left-0 right-0">
-    <div class="absolute left-1/2 top-[115px] -translate-x-1/2 bg-white rounded-3xl px-8 py-10">
-      <p class="text-lg mb-6">{{ $t('notice') }}</p>
-      <div class="flex justify-end gap-4">
-        <button class="border border-[#DEE2EB] bg-white px-9 py-3 rounded-full" @click="hide">
-          {{ $t('cancel') }}
+    <div
+      class="min-w-[540px] absolute left-1/2 top-[115px] -translate-x-1/2 bg-white rounded-2xl px-8 py-10 text-center">
+      <p class="text-lg mb-6">索取提示將會扣除部份分數,確定要索取提示？</p>
+      <div class="flex justify-center gap-4 text-sm">
+        <button class="border border-main bg-white px-8 py-3 rounded" @click="hide">
+          取消
         </button>
-        <button class="bg-primary-medium text-white px-9 py-3 rounded-full" @click="$emit('confirm')">
-          {{ $t('confirm') }}
+        <button class="bg-main text-white px-8 py-3 rounded" @click="$emit('confirm')">
+          確認
         </button>
       </div>
     </div>
   </div>
 </template>
 
-<script>
-export default {
-  props: {
-    show: {
-      type: Boolean,
-      default: false,
-    },
+<script setup>
+const props = defineProps({
+  show: {
+    type: Boolean,
+    default: false,
   },
-  methods: {
-    hide() {
-      this.$emit('update:show', false);
-    },
-  },
+});
+const emit = defineEmits(['confirm', 'update:show']);
+const hide = () => {
+  emit('update:show', false);
 };
+</script>
+
+<script>
+// export default {
+//   props: {
+//     show: {
+//       type: Boolean,
+//       default: false,
+//     },
+//   },
+//   methods: {
+//     hide() {
+//       this.$emit('update:show', false);
+//     },
+//   },
+// };
 </script>
 
 <style lang="scss" scoped></style>
