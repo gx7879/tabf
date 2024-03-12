@@ -21,64 +21,95 @@
         </template>
         <template v-else>
           <div class="space-y-1">
-            <div class="flex gap-1 border-b border-light-gray last:border-0">
+            <div v-for="i in 5" :key="i" class="flex items-center border-b border-light-gray last:border-0 px-3">
               <div class="rounded-xl bg-white w-[42px] flex justify-center items-center">
-                <img :src="awardsImg(1)" alt="" />
+                <template v-if="i > 3">
+                  {{ i }}
+                </template>
+                <template v-else>
+                  <img :src="awardsImg(i)" alt="" />
+                </template>
               </div>
-              <div class="rounded-xl bg-white px-4 py-2 flex flex-1 items-center gap-2 justify-between font-semibold">
-                <div class="text-primary-medium text-sm">123</div>
-                <div class="text-lg flex-shrink-0 basis-auto text-main">
-                  123 分
+              <div class="flex-1 ml-2">
+                <div class="flex items-center cursor-pointer" @click="toggleCollapse(i)">
+                  <div
+                    class="rounded-xl bg-white px-4 pl-0 py-2 flex flex-1 items-center gap-2 justify-between font-semibold">
+                    <div class="text-primary-medium text-sm">123</div>
+                    <div class="text-lg flex-shrink-0 basis-auto text-main">
+                      123 分
+                    </div>
+                  </div>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                    stroke="currentColor" class="w-6 h-6 text-[#ccc]" :class="{ 'rotate-180': isRankCollapse === i }">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                  </svg>
                 </div>
-              </div>
-            </div>
-            <div class="flex gap-1 border-b border-light-gray last:border-0">
-              <div class="rounded-xl bg-white w-[42px] flex justify-center items-center">
-                <img :src="awardsImg(2)" alt="" />
-              </div>
-              <div class="rounded-xl bg-white px-4 py-2 flex flex-1 items-center gap-2 justify-between font-semibold">
-                <div class="text-primary-medium text-sm">123</div>
-                <div class="text-lg flex-shrink-0 basis-auto text-main">
-                  123 分
-                </div>
+                <Collapse :when="isRankCollapse === i">
+                  <div class="grid grid-cols-5 text-center border-t border-light-gray py-2 *:h-[38px] *:leading-[38px]">
+                    <div
+                      class="rounded-full col-span-5 grid grid-flow-col auto-cols-fr bg-gradient-to-r from-[#FFAC34] to-[#FFDC06] border-[3px] border-light-gray !h-auto">
+                      <div>1</div>
+                      <div>2</div>
+                      <div>3</div>
+                      <div>4</div>
+                      <div>5</div>
+                    </div>
+                    <div class="bg-[url(@/assets/images/bg-rank.png)] bg-no-repeat bg-[length:26px_26px] bg-center">6
+                    </div>
+                    <div>7</div>
+                    <div>8</div>
+                    <div>9</div>
+                    <div>10</div>
+                    <div>11</div>
+                    <div>12</div>
+                    <div>13</div>
+                    <div>14</div>
+                    <div>15</div>
+                  </div>
+                </Collapse>
               </div>
             </div>
           </div>
         </template>
       </div>
       <h2 class="text-2xl font-semibold mb-3">我的連線資訊</h2>
-      <div class="rounded-xl bg-white px-4 py-2 text-sm font-semibold mb-2">
+      <div class="bg-main text-white px-4 py-2 h-14 text-sm font-semibold cursor-pointer flex justify-between items-center" :class="{'rounded-t-lg': isInfoCollapse,'rounded-lg': !isInfoCollapse}" @click="isInfoCollapse = !isInfoCollapse">
         123
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+          class="w-6 h-6" :class="{ 'rotate-180': isRankCollapse === i }">
+          <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+        </svg>
       </div>
-      <div class="rounded-xl p-4 text-sm font-medium bg-white space-y-1">
-        <div class="flex justify-between">
-          <div>VPN IP位址</div>
-          <span>123</span>
+      <Collapse :when="isInfoCollapse">
+        <div class="rounded-b-lg text-sm font-medium bg-white space-y-1">
+          <div class="flex justify-between last:border-0 border-b border-light-gray px-3 py-4">
+            <div>VPN IP位址</div>
+            <span>123</span>
+          </div>
+          <div class="flex justify-between last:border-0 border-b border-light-gray px-3 py-4">
+            <div>VPN 登入帳號</div>
+            <span>123</span>
+          </div>
+          <div class="flex justify-between last:border-0 border-b border-light-gray px-3 py-4">
+            <div>VPN 登入密碼</div>
+            <span>123</span>
+          </div>
+          <div class="flex justify-between last:border-0 border-b border-light-gray px-3 py-4">
+            <div>虛擬機 IP位址</div>
+            <span>
+              123
+            </span>
+          </div>
+          <div class="flex justify-between last:border-0 border-b border-light-gray px-3 py-4">
+            <div>Kali Linux 用戶帳號</div>
+            <span>kail</span>
+          </div>
+          <div class="flex justify-between last:border-0 border-b border-light-gray px-3 py-4">
+            <div>Kali Linux 用戶密碼</div>
+            <span>kail</span>
+          </div>
         </div>
-        <div class="flex justify-between">
-          <div>VPN 登入帳號</div>
-          <span>123</span>
-        </div>
-        <div class="flex justify-between">
-          <div>VPN 登入密碼</div>
-          <span>123</span>
-        </div>
-        <div class="border-t border-netural-lighter"></div>
-        <div class="flex justify-between">
-          <div>虛擬機 IP位址</div>
-          <span>
-            123
-          </span>
-        </div>
-        <div class="flex justify-between">
-          <div>Kali Linux 用戶帳號</div>
-          <span>kail</span>
-        </div>
-        <div class="flex justify-between">
-          <div>Kali Linux 用戶密碼</div>
-          <span>kail</span>
-        </div>
-      </div>
+      </Collapse>
     </div>
     <div class="flex-1">
       <div class="px-3 py-4 bg-notice-blue rounded-md mb-3 border border-notice-border-blue flex items-start gap-x-2">
@@ -167,8 +198,20 @@
 <script setup>
 import Notice from '@/components/Partials/Notice.vue';
 import { ref, computed } from 'vue';
+import { Collapse } from 'vue-collapsed'
 const show = ref(false)
 const answer = ref('')
+const isRankCollapse = ref(null)
+const toggleCollapse = (i) => {
+  if (!isRankCollapse.value || (isRankCollapse.value && isRankCollapse.value !== i)) {
+    isRankCollapse.value = i
+  } else {
+    isRankCollapse.value = null
+  }
+}
+
+const isInfoCollapse = ref(false)
+
 const awardsImg = (index) => {
   switch (index) {
     case 1:
