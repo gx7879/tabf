@@ -124,7 +124,8 @@
         若答題有困難，可以考慮使用「提示」功能，但每一次使用「提示」皆會扣分，並根據題目難易度不同，扣分比重也會有所不同。
       </span>
       <div class="border border-light-gray shadow-[0_4px_24px_0_rgba(30,50,50,0.12)] rounded-lg overflow-hidden">
-        <div class="flex px-6 py-4 gap-[15px] border-b border-light-gray" :class="{ 'bg-main': start, 'bg-white': !start }">
+        <div class="flex px-6 py-4 gap-[15px] border-b border-light-gray"
+          :class="{ 'bg-main': start, 'bg-white': !start }">
           <input v-model="answer" type="text" placeholder="請輸入答案 ..."
             class="rounded pl-3 flex-1 focus:border-primary-dark focus:ring-primary-dark"
             :class="{ 'bg-white border border-[#DEE2EB]': start, 'bg-light-gray': !start }" />
@@ -142,32 +143,32 @@
           </div>
         </div>
         <div v-else class="space-y-1">
-          <div v-for="   task    of    teamTaskSort   " :key="task.task_id" class="rounded-xl bg-white">
+          <div class="rounded-xl bg-white">
             <div class="flex items-center px-6 py-4 space-x-4">
-              <div class="w-6 h-6 rounded-full bg-black text-white text-center leading-6">{{ task.position }}</div>
+              <div class="w-6 h-6 rounded bg-main text-white text-center leading-6">1</div>
               <div class="flex-1">
-                {{ task.question }}
+                123
               </div>
-              <svg v-if="task.hint === ''" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 cursor-pointer" fill="none"
-                viewBox="0 0 28 28" @click="getHint(task)">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 cursor-pointer" fill="none" viewBox="0 0 28 28"
+                @click="getHint(task)">
                 <rect width="28" height="28" fill="#FE6418" rx="3" />
                 <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M10.563 22.938h6.874M14 20.188v-4.813M11.25 12.625l2.75 2.75 2.75-2.75" />
                 <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M9.763 17.352a6.832 6.832 0 0 1-2.638-5.372c-.017-3.73 2.982-6.832 6.712-6.918a6.875 6.875 0 0 1 4.408 12.28 2.08 2.08 0 0 0-.807 1.642v.516a.688.688 0 0 1-.688.688h-5.5a.688.688 0 0 1-.687-.688v-.516a2.097 2.097 0 0 0-.8-1.633v0Z" />
               </svg>
-              <div v-else class="rounded-[3px] w-7 h-7 bg-[#FFD1D1] text-center text-red-medium leading-7">
-                -{{ task.hint_score }}
-              </div>
-              <div v-if="task.answer === ''" class="w-7 h-7 rounded-[3px] border border-netural-lighter"></div>
-              <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 mr-4" fill="none" viewBox="0 0 28 28">
+              <!-- <div v-else class="rounded-[3px] w-7 h-7 bg-[#FFD1D1] text-center text-red-medium leading-7">
+                -123
+              </div> -->
+              <div class="w-7 h-7 rounded-[3px] border border-netural-lighter"></div>
+              <!-- <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 mr-4" fill="none" viewBox="0 0 28 28">
                 <rect width="28" height="28" fill="#2EB774" rx="3" />
                 <path fill="#fff"
                   d="M8.445 14.668a.9.9 0 1 0-1.303 1.242l3.573 3.745a.9.9 0 0 0 1.335-.036L20.64 9.582a.9.9 0 0 0-1.367-1.17l-7.656 8.944a.4.4 0 0 1-.594.016l-2.58-2.704Z" />
-              </svg>
+              </svg> -->
             </div>
-            <div v-if="task.hint || task.answer" class="border-t">
-              <div v-if="task.hint" class="ml-16 pt-4 pb-2 flex items-center">
+            <div class="bg-[#f7f7f7]">
+              <div class="ml-16 pt-4 pb-2 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 mr-4" fill="none" viewBox="0 0 28 28">
                   <rect width="28" height="28" fill="#FE6418" rx="3" />
                   <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -176,17 +177,17 @@
                     d="M9.763 17.352a6.832 6.832 0 0 1-2.638-5.372c-.017-3.73 2.982-6.832 6.712-6.918a6.875 6.875 0 0 1 4.408 12.28 2.08 2.08 0 0 0-.807 1.642v.516a.688.688 0 0 1-.688.688h-5.5a.688.688 0 0 1-.687-.688v-.516a2.097 2.097 0 0 0-.8-1.633v0Z" />
                 </svg>
                 <div class="flex-1">
-                  {{ task.hint }}
+                  123
                 </div>
               </div>
-              <div v-if="task.answer" class="ml-16 pt-2 pb-4 flex items-center">
+              <div class="ml-16 pt-2 pb-4 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 mr-4" fill="none" viewBox="0 0 28 28">
                   <rect width="28" height="28" fill="#2EB774" rx="3" />
                   <path fill="#fff"
                     d="M8.445 14.668a.9.9 0 1 0-1.303 1.242l3.573 3.745a.9.9 0 0 0 1.335-.036L20.64 9.582a.9.9 0 0 0-1.367-1.17l-7.656 8.944a.4.4 0 0 1-.594.016l-2.58-2.704Z" />
                 </svg>
                 <div class="flex-1">
-                  {{ task.answer }}
+                  123
                 </div>
               </div>
             </div>
