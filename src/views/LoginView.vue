@@ -7,15 +7,18 @@
 			</h1>
 			<div class="">
 				<form>
+					{{ values }}
 					<label class="block mb-3.5">
 						<div class="relative">
-							<div class="absolute inset-y-0 flex items-center pl-3">
-								<img src="@/assets/images/account-icon.png" alt="" />
+							<div class="relative">
+								<div class="absolute inset-y-0 flex items-center pl-3">
+									<img src="@/assets/images/account-icon.png" alt="" />
+								</div>
+								<input v-model="email" v-bind="emailAttrs" type="email"
+									class="w-full pl-10 border border-light-gray focus:border-light-gray focus:shadow-none focus:ring-0 rounded px-4 py-3 placeholder:text-[#ccc] placeholder:font-medium"
+									placeholder="請輸入帳號" />
 							</div>
-							<input v-model="email" type="email"
-								class="w-full pl-10 border border-light-gray focus:border-light-gray focus:shadow-none focus:ring-0 rounded px-4 py-3 placeholder:text-[#ccc] placeholder:font-medium"
-								placeholder="請輸入帳號" />
-							<!-- <span class="text-sm text-red-medium">請輸入帳號</span> -->
+							<span class="text-sm text-red-medium">{{ errors }}</span>
 						</div>
 					</label>
 					<label class="block mb-8">
@@ -23,7 +26,7 @@
 							<div class="absolute inset-y-0 flex items-center pl-3">
 								<img src="@/assets/images/password-icon.png" alt="" />
 							</div>
-							<input v-model="password" type="password"
+							<input v-model="password" type="password" v-bind="passwordAttrs"
 								class="w-full pl-10 border border-light-gray focus:border-light-gray focus:shadow-none focus:ring-0 rounded px-4 py-3 placeholder:text-[#ccc] placeholder:font-medium"
 								placeholder="請輸入密碼" />
 							<!-- <span class="text-sm text-red-medium">請輸入密碼</span> -->
@@ -40,8 +43,18 @@
 
 <script setup>
 import { ref } from "vue";
-const email = ref(null);
-const password = ref(null);
+import { useForm } from 'vee-validate';
+import * as yup from 'yup';
+
+const { values, errors, defineField } = useForm({
+	validationSchema: yup.object({
+		email: yup.string().required().email(),
+	})
+});
+const [email, emailAttrs] = defineField('email')
+const [password, passwordAttrs] = defineField('password')
+
+
 </script>
 
 <style lang="scss" scoped></style>
