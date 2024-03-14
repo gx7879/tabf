@@ -6,8 +6,7 @@
 				多功能數位靶場<span class="block text-[34px]">攻擊演練與數位鑑識競賽</span>
 			</h1>
 			<div class="">
-				<form>
-					{{ values }}
+				<form @submit="onSubmit">
 					<label class="block mb-3.5">
 						<div class="relative">
 							<div class="relative">
@@ -18,7 +17,7 @@
 									class="w-full pl-10 border border-light-gray focus:border-light-gray focus:shadow-none focus:ring-0 rounded px-4 py-3 placeholder:text-[#ccc] placeholder:font-medium"
 									placeholder="請輸入帳號" />
 							</div>
-							<span class="text-sm text-red-medium">{{ errors }}</span>
+							<span v-if="errors.email && meta.touched" class="text-sm text-red-medium">{{ errors.email }}</span>
 						</div>
 					</label>
 					<label class="block mb-8">
@@ -29,7 +28,7 @@
 							<input v-model="password" type="password" v-bind="passwordAttrs"
 								class="w-full pl-10 border border-light-gray focus:border-light-gray focus:shadow-none focus:ring-0 rounded px-4 py-3 placeholder:text-[#ccc] placeholder:font-medium"
 								placeholder="請輸入密碼" />
-							<!-- <span class="text-sm text-red-medium">請輸入密碼</span> -->
+							<span v-if="errors.password && meta.touched" class="text-sm text-red-medium">{{ errors.password }}</span>
 						</div>
 					</label>
 					<button type="submit" class="bg-main py-3 w-full rounded text-white hover:bg-primary-dark">
@@ -46,14 +45,18 @@ import { ref } from "vue";
 import { useForm } from 'vee-validate';
 import * as yup from 'yup';
 
-const { values, errors, defineField } = useForm({
+const { values, errors, meta, defineField, handleSubmit } = useForm({
 	validationSchema: yup.object({
 		email: yup.string().required().email(),
+		password: yup.string().required()
 	})
 });
 const [email, emailAttrs] = defineField('email')
 const [password, passwordAttrs] = defineField('password')
 
+const onSubmit = handleSubmit((values) => {
+	alert(JSON.stringify(values, null, 2))
+})
 
 </script>
 

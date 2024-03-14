@@ -5,11 +5,12 @@ export default {
     extend: {
       colors: {
         'success-medium': '#2EB774',
-        'main': '#A8A31B',
+        main: '#A8A31B',
         'light-gray': '#DEE2EB',
         'font-black': '#212121',
         'notice-border-blue': '#2EA7FF',
-        'notice-blue': '#F2FAFF'
+        'notice-blue': '#F2FAFF',
+        'red-medium': '#E83939'
       }
     }
   },
