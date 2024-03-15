@@ -1,10 +1,11 @@
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+import { login, signOut } from '@/api/login';
 
 export const useUserStore = defineStore('user', () => {
   const token = ref(getToken())
-  const login = (accountInfo) => {
+  const loginFun = (accountInfo) => {
     return new Promise((resolve, reject) => {
       login(accountInfo)
         .then((res) => {
@@ -16,7 +17,7 @@ export const useUserStore = defineStore('user', () => {
         .catch((err) => reject(err))
     })
   }
-  const signOut = () => {
+  const signOutFun = () => {
     return new Promise((resolve, reject) => {
       signOut()
         .then((res) => {
@@ -29,7 +30,7 @@ export const useUserStore = defineStore('user', () => {
   }
   return {
     token,
-    login,
-    signOut
+    loginFun,
+    signOutFun
   }
 })

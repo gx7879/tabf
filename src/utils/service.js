@@ -4,7 +4,7 @@ import { useUserStore } from '@/stores/user'
 import { getToken, removeToken } from '@/utils/auth'
 
 const service = axios.create({
-  // baseURL: ''
+  baseURL: 'https://digiforen.double-cash.com'
 })
 
 service.interceptors.request.use(
