@@ -7,9 +7,6 @@
         <vue3-flip-countdown :flipAnimation="false" :showDays="false"
           :labels="{ hours: 'HOURS', minutes: 'MINUTES', seconds: 'SECONDS' }" mainColor="#fff" labelColor="#fff"
           countdownSize="40px" labelSize="16px" class="countdown-style" @timeElapsed="$router.go(-1)" />
-        <!-- <flip-countdown :deadline="activity.competition_end_datetime"
-            :labels="{ days: 'DAYS', hours: 'HOURS', minutes: 'MINUTES', seconds: 'SECONDS' }" countdown-size="32px"
-            label-size="16px" class="countdown-style" @timeElapsed="$router.go(-1)"></flip-countdown> -->
       </div>
       <h2 class="text-2xl font-semibold mb-3">競賽排行榜</h2>
       <div class="bg-white rounded-lg border border-light-gray shadow-[0_4px_24px_0_rgba(30,50,50,0.12)] mb-10">
@@ -201,8 +198,13 @@
 
 <script setup>
 import Notice from '@/components/Partials/Notice.vue';
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
 import { Collapse } from 'vue-collapsed'
+import { activity, submitAnswer, getHint } from '@/api/activity';
+
+const route = useRoute()
+
 const show = ref(false)
 const answer = ref('')
 const isRankCollapse = ref(null)
@@ -231,6 +233,29 @@ const awardsImg = (index) => {
 const confirmHint = () => { }
 const start = computed(() => {
   return true
+})
+
+const activityData = ref({})
+
+const getActivity = async () => {
+  console.log('123')
+  const { activityId } = route.params
+  try {
+    const { data } = await activity(activityId)
+    if (data.status === 'success') {
+      const { activity, player, team_task, notify } = data.response;
+      activityData.value.activity = activity
+      activityData.value.player = player
+      activityData.value.teamTask = team_task
+      activityData.value.notify = notify
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+onMounted(async () => {
+  await getActivity()
 })
 </script>
 

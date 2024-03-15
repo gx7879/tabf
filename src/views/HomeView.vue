@@ -17,7 +17,7 @@
               </svg>
             </div>
             <div v-else class="flex-1 flex justify-end items-center">
-              <span class="text-sm">王小明</span>
+              <span class="text-sm">{{ name }}</span>
               <!-- <img class="w-5" src="@/assets/images/pencil.svg" alt="" /> -->
               <svg xmlns="http://www.w3.org/2000/svg" class="w-5 ml-1 cursor-pointer text-black/20 stroke-current"
                 fill="none" viewBox="0 0 32 32" @click="editToggle">
@@ -28,7 +28,7 @@
           </div>
           <div class="bg-white rounded-xl px-4 py-2 flex items-center h-14 justify-between">
             <div class="text-sm w-[100px] flex-shrink-0">平台帳號</div>
-            <div class="text-sm break-all">test@gmail.com</div>
+            <div class="text-sm break-all">{{ member.email }}</div>
           </div>
         </div>
       </div>
@@ -68,65 +68,106 @@
   </div>
 </template>
 
+<script setup>
+import { onBeforeMount, ref } from 'vue';
+import { memberData, memberNameEdit } from '@/api/member';
+
+const editStatus = ref(false)
+const member = ref({})
+const activity = ref([])
+const name = ref('')
+const oldVal = ref('')
+const editToggle = async () => {
+  if (editStatus.value) {
+    if (name.value !== '') {
+      try {
+        const formData = new FormData();
+        formData.append('name', name.value);
+        const { data } = await memberNameEdit(formData);
+        if (data.status !== 'success') {
+          name.value = oldVal.value;
+          oldVal.value = '';
+        }
+      } catch (error) {
+        name.value = oldVal.value;
+        oldVal.value = '';
+      }
+    }
+  }
+}
+onBeforeMount(async () => {
+  try {
+    const { data } = await memberData();
+    if (data.status === 'success') {
+      member.value = data.response.member;
+      activity.value = data.response.activity;
+      name.value = data.response.member.name;
+    }
+  } catch (error) {
+    console.log(error);
+  }
+})
+</script>
+
 <script>
 // import { memberData, memberNameEdit } from '@/api/member';
 
-export default {
-  components: {},
-  data() {
-    return {
-      editStatus: false,
-      member: {},
-      activity: [
-        {
-          activity_id: 1,
-          activity_start_datetime: '2024/03/06 14:00~16:00',
-          name: '2024第一季'
-        }
-      ],
-      name: '',
-      oldVal: '',
-    };
-  },
-  // async beforeMount() {
-  //   try {
-  //     const { data } = await memberData();
-  //     console.log(data);
-  //     if (data.status === 'success') {
-  //       this.member = data.response.member;
-  //       this.activity = data.response.activity;
-  //       this.name = data.response.member.name;
-  //     }
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // },
-  methods: {
-    async editToggle() {
-      if (this.editStatus) {
-        if (this.name !== '') {
-          try {
-            const formData = new FormData();
-            formData.append('name', this.name);
-            const { data } = await memberNameEdit(formData);
-            if (data.status !== 'success') {
-              this.name = this.oldVal;
-              this.oldVal = '';
-            }
-            console.log(data);
-          } catch (error) {
-            this.name = this.oldVal;
-            this.oldVal = '';
-          }
-        }
-      } else {
-        this.oldVal = this.name;
-      }
-      this.editStatus = !this.editStatus;
-    },
-    goActivity() {
-      this.$router.push('/activity')
-    }
-  },
-};
+// export default {
+//   components: {},
+//   data() {
+//     return {
+//       editStatus: false,
+//       member: {},
+//       activity: [
+//         {
+//           activity_id: 1,
+//           activity_start_datetime: '2024/03/06 14:00~16:00',
+//           name: '2024第一季'
+//         }
+//       ],
+//       name: '',
+//       oldVal: '',
+//     };
+//   },
+//   // async beforeMount() {
+//   //   try {
+//   //     const { data } = await memberData();
+//   //     console.log(data);
+//   //     if (data.status === 'success') {
+//   //       this.member = data.response.member;
+//   //       this.activity = data.response.activity;
+//   //       this.name = data.response.member.name;
+//   //     }
+//   //   } catch (error) {
+//   //     console.log(error);
+//   //   }
+//   // },
+//   methods: {
+//     async editToggle() {
+//       if (this.editStatus) {
+//         if (this.name !== '') {
+//           try {
+//             const formData = new FormData();
+//             formData.append('name', this.name);
+//             const { data } = await memberNameEdit(formData);
+//             if (data.status !== 'success') {
+//               this.name = this.oldVal;
+//               this.oldVal = '';
+//             }
+//             console.log(data);
+//           } catch (error) {
+//             this.name = this.oldVal;
+//             this.oldVal = '';
+//           }
+//         }
+//       } else {
+//         this.oldVal = this.name;
+//       }
+//       this.editStatus = !this.editStatus;
+//     },
+//     goActivity() {
+//       this.$router.push('/activity')
+//     }
+//   },
+// };
 </script>
