@@ -36,31 +36,23 @@
         <div class="text-2xl font-semibold mb-3">我的活動</div>
         <div
           class="space-y-1 border border-light-gray rounded-lg overflow-hidden shadow-[0_4px_24px_0_rgba(30,50,50,0.12)]">
-          <div class="flex justify-between items-center bg-white px-6 py-4 border-b border-light-gray last:border-0">
+          <div v-for="item of activity" :key="item.activity_id"
+            class="flex justify-between items-center bg-white px-6 py-4 border-b border-light-gray last:border-0">
             <div class="text-sm flex items-center font-medium">
               <div class="w-1 h-6 bg-main mr-4"></div>
-              2024/03/06&nbsp;&nbsp;14:00~16:00
-              <span class="text-sm ml-8 text-main font-semibold">2023 第一季 攻擊演練與數位鑑識競賽</span>
+              {{ new Date(item.activity_start_datetime).toLocaleDateString() }}&nbsp;&nbsp;{{
+              item.activity_start_datetime.split(' ')[1]
+            }}~{{ item.activity_end_datetime.split(' ')[1] }}
+              <span class="text-sm ml-8 text-main font-semibold">{{ item.name }}</span>
             </div>
-            <!-- <router-link v-slot="{ navigate }" :to="{ name: 'activity', params: { activityId: item.activity_id } }"
-              custom> -->
-            <button type="button" class="rounded bg-main px-4 py-3 text-white cursor-pointer hover:bg-primary-dark"
-              @click="goActivity">
-              進入活動
-            </button>
-            <!-- </router-link> -->
+            <router-link v-slot="{ navigate }" :to="{ name: 'activity', params: { activityId: item.activity_id } }"
+              custom>
+              <button type="button" class="rounded bg-main px-4 py-3 text-white cursor-pointer hover:bg-primary-dark"
+                @click="navigate">
+                進入活動
+              </button>
+            </router-link>
             <!-- <div class="rounded-full bg-primary-medium px-4 py-3 text-white cursor-pointer">進入活動</div> -->
-          </div>
-          <div class="flex justify-between items-center bg-white px-6 py-4 border-b border-light-gray last:border-0">
-            <div class="text-sm flex items-center font-medium">
-              <div class="w-1 h-6 bg-main mr-4"></div>
-              2024/03/06&nbsp;&nbsp;14:00~16:00
-              <span class="text-sm ml-8 text-main font-semibold">2023 第一季 攻擊演練與數位鑑識競賽</span>
-            </div>
-            <button type="button" class="rounded bg-main px-4 py-3 text-white cursor-pointer hover:bg-primary-dark"
-              @click="goActivity">
-              進入活動
-            </button>
           </div>
         </div>
       </div>
