@@ -13,12 +13,12 @@
             @timeElapsed="$router.go(-1)" />
         </template>
       </div>
-      <h2 class="text-2xl font-semibold mb-3">競賽排行榜</h2>
+      <h2 class="text-2xl font-semibold mb-3">{{ $t('ranking') }}</h2>
       <div class="bg-white rounded-lg border border-light-gray shadow-[0_4px_24px_0_rgba(30,50,50,0.12)] mb-10">
         <template v-if="!start">
           <div class="flex justify-center items-center flex-col py-7">
             <img class="mb-3" src="@/assets/images/rank-empty.png" alt="" />
-            <div class="text-sm font-semibold">競賽過程中將會即時更新排名</div>
+            <div class="text-sm font-semibold">{{ $t('realtime') }}</div>
           </div>
         </template>
         <template v-else>
@@ -77,7 +77,7 @@
           </div>
         </template>
       </div>
-      <h2 class="text-2xl font-semibold mb-3">我的連線資訊</h2>
+      <h2 class="text-2xl font-semibold mb-3">{{ $t('connection') }}</h2>
       <div
         class="bg-main text-white px-4 py-2 h-14 text-sm font-semibold cursor-pointer flex justify-between items-center"
         :class="{ 'rounded-t-lg': isInfoCollapse, 'rounded-lg': !isInfoCollapse }"
@@ -91,27 +91,27 @@
       <Collapse :when="isInfoCollapse">
         <div class="rounded-b-lg text-sm font-medium bg-white space-y-1">
           <div class="flex justify-between last:border-0 border-b border-light-gray px-3 py-4">
-            <div>VM 登入帳號</div>
+            <div>{{ $t('vmaccount') }}</div>
             <span>{{ playerData.vm_account }}</span>
           </div>
           <div class="flex justify-between last:border-0 border-b border-light-gray px-3 py-4">
-            <div>VM 登入密碼</div>
+            <div>{{ $t('vmpassword') }}</div>
             <span>{{ playerData.vm_password }}</span>
           </div>
           <div class="flex justify-between last:border-0 border-b border-light-gray px-3 py-4">
-            <div>VM IP位置</div>
+            <div>{{ $t('vmaddress') }}</div>
             <span>{{ playerData.vm_ip }}</span>
           </div>
           <div class="flex justify-between last:border-0 border-b border-light-gray px-3 py-4">
-            <div>VPN 登入帳號</div>
+            <div>{{ $t('vpnaccount') }}</div>
             <span>{{ playerData.vpn_account }}</span>
           </div>
           <div class="flex justify-between last:border-0 border-b border-light-gray px-3 py-4">
-            <div>VPN 登入密碼</div>
+            <div>{{ $t('vpnpassword') }}</div>
             <span>{{ playerData.vpn_password }}</span>
           </div>
           <div class="flex justify-between last:border-0 border-b border-light-gray px-3 py-4">
-            <div>VPN IP位置</div>
+            <div>{{ $t('vpnaddress') }}</div>
             <span>{{ playerData.vpn_ip }}</span>
           </div>
         </div>
@@ -123,14 +123,14 @@
         <img src="@/assets/images/notice-icon.png" alt="" />
         {{ notifyData }}
       </div>
-      <div class="text-2xl font-semibold mb-[5px] text-font-black">任務作答區</div>
+      <div class="text-2xl font-semibold mb-[5px] text-font-black">{{ $t('taskanswering') }}</div>
       <span class="text-sm text-font-black block mb-3">
-        若答題有困難，可以考慮使用「提示」功能，但每一次使用「提示」皆會扣分，並根據題目難易度不同，扣分比重也會有所不同。
+        {{ $t('notify') }}
       </span>
       <div class="border border-light-gray shadow-[0_4px_24px_0_rgba(30,50,50,0.12)] rounded-lg overflow-hidden">
         <div class="flex px-6 py-4 gap-[15px] border-b border-light-gray"
           :class="{ 'bg-main': start, 'bg-white': !start }">
-          <input v-model="answer" type="text" placeholder="請輸入答案 ..."
+          <input v-model="answer" type="text" :placeholder="$t('answer')"
             class="rounded pl-3 flex-1 focus:border-primary-dark focus:ring-primary-dark" :class="{
         'bg-white border border-[#DEE2EB]': start,
         'bg-light-gray': !start
@@ -139,7 +139,7 @@
         'bg-white text-font-black': start,
         'bg-black/20 cursor-default text-white': !start
       }" @click="submitAnswerFun">
-            提交答案
+            {{ $t('submit') }}
           </button>
         </div>
         <div v-if="!start" class="bg-white min-h-[645px] flex justify-center items-center">
@@ -213,6 +213,8 @@ import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Collapse } from 'vue-collapsed'
 import { activity, submitAnswer, getHint } from '@/api/activity'
+import { useI18n } from "vue-i18n";
+const { t } = useI18n()
 
 const route = useRoute()
 const router = useRouter()
@@ -234,7 +236,7 @@ const timeStart = () => {
       await getActivity();
     }, 10000);
   } else {
-    console.log('比賽時間未到');
+    console.log(t('competitionnotstartedyet'));
   }
 }
 timeComing.value = window.setInterval(timeStart, 1000);
@@ -333,7 +335,7 @@ const submitAnswerFun = async () => {
       }
     } else {
       // eslint-disable-next-line no-alert
-      alert('請先輸入答案')
+      alert(t('enteranswerfirst'))
     }
   } catch (error) {
     console.log(error)
@@ -348,7 +350,7 @@ const stopWatch = watch(() => activityData.value.activity_start_datetime, (newVa
   console.log(newValue, oldValue)
   const now = new Date();
   if (new Date(newValue) < now) {
-    console.log('比賽時間未到');
+    console.log(t('competitionnotstartedyet'));
   } else {
     activityIntervalId.value = window.setInterval(async () => {
       await getActivity();

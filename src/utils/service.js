@@ -4,7 +4,7 @@ import { useUserStore } from '@/stores/user'
 import { getToken, removeToken } from '@/utils/auth'
 
 const service = axios.create({
-  baseURL: 'http://34.80.193.85'
+  // baseURL: 'http://34.80.193.85'
 })
 
 service.interceptors.request.use(

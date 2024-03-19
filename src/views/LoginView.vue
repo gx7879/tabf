@@ -5,7 +5,7 @@
 	<div class="flex-1 flex justify-center items-center">
 		<div>
 			<h1 class="text-[28px] mb-10 text-center font-semibold">
-				多功能數位靶場<span class="block text-[34px]">攻擊演練與數位鑑識競賽</span>
+				{{ $t('MDR') }}<span class="block text-[34px]" v-html="$t('PTaDFC')"></span>
 			</h1>
 			<div class="">
 				<form @submit="onSubmit">
@@ -17,7 +17,7 @@
 								</div>
 								<input v-model="email" v-bind="emailAttrs" type="email" name="email"
 									class="w-full pl-10 border border-light-gray focus:border-light-gray focus:shadow-none focus:ring-0 rounded px-4 py-3 placeholder:text-[#ccc] placeholder:font-medium"
-									placeholder="請輸入帳號" />
+									:placeholder="$t('account_placeholder')" />
 							</div>
 							<span v-if="errors.email && meta.touched" class="text-sm text-red-medium">{{ errors.email
 								}}</span>
@@ -30,14 +30,14 @@
 							</div>
 							<input v-model="password" type="password" v-bind="passwordAttrs" name="password"
 								class="w-full pl-10 border border-light-gray focus:border-light-gray focus:shadow-none focus:ring-0 rounded px-4 py-3 placeholder:text-[#ccc] placeholder:font-medium"
-								placeholder="請輸入密碼" />
+								:placeholder="$t('password_placeholder')" />
 							<span v-if="errors.password && meta.touched" class="text-sm text-red-medium">{{
 					errors.password }}</span>
 						</div>
 					</label>
 					<button type="submit" :disabled="isSubmitting"
 						class="bg-main py-3 w-full rounded text-white hover:bg-primary-dark">
-						登入
+						{{ $t('login') }}
 					</button>
 				</form>
 			</div>

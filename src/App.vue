@@ -2,7 +2,10 @@
 import { RouterLink, RouterView } from 'vue-router'
 import { useUserStore } from "@/stores/user";
 import { useRouter } from 'vue-router';
-
+// import { Locale } from 'vue-i18n'
+import { useI18n } from "vue-i18n";
+import { ref, computed, onMounted } from 'vue';
+const { locale } = useI18n();
 const router = useRouter()
 const user = useUserStore()
 const { signOutFun } = user
@@ -12,6 +15,49 @@ const signOut = async () => {
     router.push('/login')
   }
 }
+
+const languages = ref([
+  { value: '繁體中文', key: 'zh_TW' },
+  { value: 'English', key: 'en' },
+])
+const lang = ref('zh_TW')
+const currentLang = computed(() => {
+  const array = languages.value.reduce((prev, lang) => {
+    const obj = { [`${lang.key}`]: lang.value };
+    return { ...prev, ...obj };
+  }, {});
+  return array[lang.value]
+})
+const show = ref(false)
+const toggleLangSelect = ()=> {
+  show.value = !show.value
+}
+const langSelectHide = ()=> {
+  show.value = false
+}
+
+locale.value = 'en'
+
+const setLang = (langVal) => {
+  lang.value = langVal.key
+  locale.value = langVal.key
+  localStorage.setItem('locale', langVal.key);
+  // if (langVal.key === 'zh_TW') {
+  //   locale.value = 'zh_TW'
+  // } else {
+  //   locale.value = 'en'
+  // }
+}
+
+onMounted(()=>{
+  lang.value = localStorage.getItem('locale') ?? 'zh_TW';
+  locale.value = lang.value
+  // if (lang.value === 'zh_TW') {
+  //   locale.value = 'zh_TW'
+  // } else {
+  //   locale.value = 'en'
+  // }
+})
 </script>
 
 <template>
@@ -30,7 +76,32 @@ const signOut = async () => {
       'bg-main text-white': $route.path === '/login',
       'border border-main': $route.path !== '/login'
     }" @click="signOut">
-        登出
+        {{ $t('logout') }}
+      </div>
+      <div class="relative inline-block text-left">
+        <div>
+          <button id="menu-button" v-click-outside="langSelectHide" type="button"
+            class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50"
+            aria-expanded="true" aria-haspopup="true" @click="toggleLangSelect">
+            {{ currentLang }}
+            <svg class="-mr-1 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+              <path fill-rule="evenodd"
+                d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
+                clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+        <div v-show="show"
+          class="absolute right-0 z-10 mt-2 w-56 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none"
+          role="menu" aria-orientation="vertical" aria-labelledby="menu-button" tabindex="-1">
+          <div class="py-1" role="none">
+            <li v-for="language of languages" :key="language.key"
+              class="text-gray-700 block px-4 py-2 text-sm cursor-pointer" role="menuitem" tabindex="-1"
+              @click="setLang(language)">
+              {{ language.value }}
+            </li>
+          </div>
+        </div>
       </div>
     </div>
   </header>

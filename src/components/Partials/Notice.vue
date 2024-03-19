@@ -5,10 +5,10 @@
       <p class="text-lg mb-6">索取提示將會扣除部份分數,確定要索取提示？</p>
       <div class="flex justify-center gap-4 text-sm">
         <button class="border border-main bg-white px-8 py-3 rounded" @click="hide">
-          取消
+          {{ $t('cancel') }}
         </button>
         <button class="bg-main text-white px-8 py-3 rounded" @click="$emit('confirm')">
-          確認
+          {{ $t('confirm') }}
         </button>
       </div>
     </div>

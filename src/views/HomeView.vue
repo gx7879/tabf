@@ -2,11 +2,11 @@
   <div class="p-10 max-w-[1440px] mx-auto">
     <div class="flex gap-10">
       <div class="w-[355px]">
-        <div class="text-lg font-semibold mb-3">個人資料</div>
+        <div class="text-lg font-semibold mb-3">{{ $t('welcomeback') }}</div>
         <div
           class="space-y-1 border border-light-gray rounded-lg overflow-hidden shadow-[0_4px_24px_0_rgba(30,50,50,0.12)]">
           <div class="bg-white px-4 py-1 flex items-center h-14 border-b border-light-gray">
-            <div class="text-sm w-[100px] flex-shrink-0">姓名</div>
+            <div class="text-sm w-[100px] flex-shrink-0">{{ $t('name') }}</div>
             <div v-if="editStatus" class="flex-1 flex justify-end">
               <input v-model.trim="name" type="text" class="w-[143px] h-8 px-2 border border-netural-lighter rounded"
                 placeholder="請輸入姓名" maxlength="24" />
@@ -27,13 +27,13 @@
             </div>
           </div>
           <div class="bg-white rounded-xl px-4 py-2 flex items-center h-14 justify-between">
-            <div class="text-sm w-[100px] flex-shrink-0">平台帳號</div>
+            <div class="text-sm w-[100px] flex-shrink-0">{{ $t('PA') }}</div>
             <div class="text-sm break-all">{{ member.email }}</div>
           </div>
         </div>
       </div>
       <div class="flex-1">
-        <div class="text-2xl font-semibold mb-3">我的活動</div>
+        <div class="text-2xl font-semibold mb-3">{{ $t('activity') }}</div>
         <div
           class="space-y-1 border border-light-gray rounded-lg overflow-hidden shadow-[0_4px_24px_0_rgba(30,50,50,0.12)]">
           <div v-for="item of activity" :key="item.activity_id"
@@ -49,7 +49,7 @@
               custom>
               <button type="button" class="rounded bg-main px-4 py-3 text-white cursor-pointer hover:bg-primary-dark"
                 @click="navigate">
-                進入活動
+                {{ $t('joinnow') }}
               </button>
             </router-link>
             <!-- <div class="rounded-full bg-primary-medium px-4 py-3 text-white cursor-pointer">進入活動</div> -->
@@ -85,7 +85,11 @@ const editToggle = async () => {
         oldVal.value = '';
       }
     }
+  } else {
+    oldVal.value = name.value;
   }
+
+  editStatus.value = !editStatus.value
 }
 onBeforeMount(async () => {
   try {
@@ -101,65 +105,3 @@ onBeforeMount(async () => {
 })
 </script>
 
-<script>
-// import { memberData, memberNameEdit } from '@/api/member';
-
-// export default {
-//   components: {},
-//   data() {
-//     return {
-//       editStatus: false,
-//       member: {},
-//       activity: [
-//         {
-//           activity_id: 1,
-//           activity_start_datetime: '2024/03/06 14:00~16:00',
-//           name: '2024第一季'
-//         }
-//       ],
-//       name: '',
-//       oldVal: '',
-//     };
-//   },
-//   // async beforeMount() {
-//   //   try {
-//   //     const { data } = await memberData();
-//   //     console.log(data);
-//   //     if (data.status === 'success') {
-//   //       this.member = data.response.member;
-//   //       this.activity = data.response.activity;
-//   //       this.name = data.response.member.name;
-//   //     }
-//   //   } catch (error) {
-//   //     console.log(error);
-//   //   }
-//   // },
-//   methods: {
-//     async editToggle() {
-//       if (this.editStatus) {
-//         if (this.name !== '') {
-//           try {
-//             const formData = new FormData();
-//             formData.append('name', this.name);
-//             const { data } = await memberNameEdit(formData);
-//             if (data.status !== 'success') {
-//               this.name = this.oldVal;
-//               this.oldVal = '';
-//             }
-//             console.log(data);
-//           } catch (error) {
-//             this.name = this.oldVal;
-//             this.oldVal = '';
-//           }
-//         }
-//       } else {
-//         this.oldVal = this.name;
-//       }
-//       this.editStatus = !this.editStatus;
-//     },
-//     goActivity() {
-//       this.$router.push('/activity')
-//     }
-//   },
-// };
-</script>
