@@ -2,17 +2,22 @@
   <div class="flex gap-10 p-10 max-w-[1440px] mx-auto">
     <div class="w-[330px]">
       <h2 class="text-2xl font-semibold text-font-black">{{ activityData.name }}</h2>
-      <span class="text-sm mb-3 block font-semibold text-font-black">{{ activityData.description }}</span>
-      <div v-if="activityData.competition_end_datetime" class="bg-white py-4 mb-10 flex">
-        <vue3-flip-countdown :deadline="activityData.competition_end_datetime" :flipAnimation="false" :showDays="false"
-          :labels="{ hours: 'HOURS', minutes: 'MINUTES', seconds: 'SECONDS' }" mainColor="#fff" labelColor="#fff"
-          countdownSize="40px" labelSize="16px" class="countdown-style" @timeElapsed="$router.go(-1)" />
+      <span class="text-sm mb-3 block font-semibold text-font-black">{{
+        activityData.description
+      }}</span>
+      <div v-if="activityData.competition_end_datetime && start" class="bg-white py-4 mb-10 flex">
+        <template v-if="Object.keys(activityData).length > 0">
+          <vue3-flip-countdown :deadline="activityData.competition_end_datetime" :flipAnimation="false"
+            :showDays="false" :labels="{ hours: 'HOURS', minutes: 'MINUTES', seconds: 'SECONDS' }" mainColor="#fff"
+            labelColor="#fff" countdownSize="40px" labelSize="16px" class="countdown-style"
+            @timeElapsed="$router.go(-1)" />
+        </template>
       </div>
       <h2 class="text-2xl font-semibold mb-3">競賽排行榜</h2>
       <div class="bg-white rounded-lg border border-light-gray shadow-[0_4px_24px_0_rgba(30,50,50,0.12)] mb-10">
-        <template v-if="false">
+        <template v-if="!start">
           <div class="flex justify-center items-center flex-col py-7">
-            <img class="mb-3" src="@/assets/images/rank-empty.png" alt="">
+            <img class="mb-3" src="@/assets/images/rank-empty.png" alt="" />
             <div class="text-sm font-semibold">競賽過程中將會即時更新排名</div>
           </div>
         </template>
@@ -21,7 +26,7 @@
             <div v-for="(list, index) of teamList" :key="list.team_id"
               class="flex items-center border-b border-light-gray last:border-0 px-3">
               <div class="rounded-xl bg-white w-[42px] flex justify-center items-center">
-                <template v-if="(index + 1) > 3">
+                <template v-if="index + 1 > 3">
                   {{ index + 1 }}
                 </template>
                 <template v-else>
@@ -53,7 +58,8 @@
                       <div>4</div>
                       <div>5</div>
                     </div>
-                    <div class="bg-[url(@/assets/images/bg-rank.png)] bg-no-repeat bg-[length:26px_26px] bg-center">6
+                    <div class="bg-[url(@/assets/images/bg-rank.png)] bg-no-repeat bg-[length:26px_26px] bg-center">
+                      6
                     </div>
                     <div>7</div>
                     <div>8</div>
@@ -76,7 +82,7 @@
         class="bg-main text-white px-4 py-2 h-14 text-sm font-semibold cursor-pointer flex justify-between items-center"
         :class="{ 'rounded-t-lg': isInfoCollapse, 'rounded-lg': !isInfoCollapse }"
         @click="isInfoCollapse = !isInfoCollapse">
-        123
+        {{ playerData.team_name }}
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
           class="w-6 h-6" :class="{ 'rotate-180': isInfoCollapse }">
           <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
@@ -114,7 +120,7 @@
     <div class="flex-1">
       <div v-if="notifyData"
         class="px-3 py-4 bg-notice-blue rounded-md mb-3 border border-notice-border-blue flex items-start gap-x-2">
-        <img src="@/assets/images/notice-icon.png" alt="">
+        <img src="@/assets/images/notice-icon.png" alt="" />
         {{ notifyData }}
       </div>
       <div class="text-2xl font-semibold mb-[5px] text-font-black">任務作答區</div>
@@ -125,11 +131,13 @@
         <div class="flex px-6 py-4 gap-[15px] border-b border-light-gray"
           :class="{ 'bg-main': start, 'bg-white': !start }">
           <input v-model="answer" type="text" placeholder="請輸入答案 ..."
-            class="rounded pl-3 flex-1 focus:border-primary-dark focus:ring-primary-dark"
-            :class="{ 'bg-white border border-[#DEE2EB]': start, 'bg-light-gray': !start }" />
+            class="rounded pl-3 flex-1 focus:border-primary-dark focus:ring-primary-dark" :class="{
+        'bg-white border border-[#DEE2EB]': start,
+        'bg-light-gray': !start
+      }" />
           <button type="button" class="rounded px-3 text-center py-3" :class="{
         'bg-white text-font-black': start,
-        'bg-black/20 cursor-default text-white': !start,
+        'bg-black/20 cursor-default text-white': !start
       }" @click="submitAnswerFun">
             提交答案
           </button>
@@ -143,30 +151,32 @@
         <div v-else class="space-y-1">
           <div v-for="task of teamTaskSort" :key="task.task_id" class="rounded-xl bg-white">
             <div class="flex items-center px-6 py-4 space-x-4">
-              <div class="w-6 h-6 rounded bg-main text-white text-center leading-6">{{ task.position }}</div>
+              <div class="w-6 h-6 rounded bg-main text-white text-center leading-6">
+                {{ task.position }}
+              </div>
               <div class="flex-1">
                 {{ task.question }}
               </div>
-              <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 cursor-pointer" fill="none" viewBox="0 0 28 28"
-                @click="getHintFun(task)">
+              <svg v-if="task.hint === ''" xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 cursor-pointer" fill="none"
+                viewBox="0 0 28 28" @click="getHintFun(task)">
                 <rect width="28" height="28" fill="#FE6418" rx="3" />
                 <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M10.563 22.938h6.874M14 20.188v-4.813M11.25 12.625l2.75 2.75 2.75-2.75" />
                 <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M9.763 17.352a6.832 6.832 0 0 1-2.638-5.372c-.017-3.73 2.982-6.832 6.712-6.918a6.875 6.875 0 0 1 4.408 12.28 2.08 2.08 0 0 0-.807 1.642v.516a.688.688 0 0 1-.688.688h-5.5a.688.688 0 0 1-.687-.688v-.516a2.097 2.097 0 0 0-.8-1.633v0Z" />
               </svg>
-              <!-- <div v-else class="rounded-[3px] w-7 h-7 bg-[#FFD1D1] text-center text-red-medium leading-7">
-                -123
-              </div> -->
-              <div class="w-7 h-7 rounded-[3px] border border-netural-lighter"></div>
-              <!-- <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 mr-4" fill="none" viewBox="0 0 28 28">
+              <div v-else class="rounded-[3px] w-7 h-7 bg-[#FFD1D1] text-center text-red-medium leading-7">
+                -{{ task.hint_score }}
+              </div>
+              <div v-if="task.answer === ''" class="w-7 h-7 rounded-[3px] border border-netural-lighter"></div>
+              <svg v-else xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 mr-4" fill="none" viewBox="0 0 28 28">
                 <rect width="28" height="28" fill="#2EB774" rx="3" />
                 <path fill="#fff"
                   d="M8.445 14.668a.9.9 0 1 0-1.303 1.242l3.573 3.745a.9.9 0 0 0 1.335-.036L20.64 9.582a.9.9 0 0 0-1.367-1.17l-7.656 8.944a.4.4 0 0 1-.594.016l-2.58-2.704Z" />
-              </svg> -->
+              </svg>
             </div>
-            <div class="bg-[#f7f7f7]">
-              <div class="ml-16 pt-4 pb-2 flex items-center">
+            <div v-if="task.hint || task.answer" class="bg-[#f7f7f7]">
+              <div v-if="task.hint" class="ml-16 pt-4 pb-2 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 mr-4" fill="none" viewBox="0 0 28 28">
                   <rect width="28" height="28" fill="#FE6418" rx="3" />
                   <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -175,17 +185,17 @@
                     d="M9.763 17.352a6.832 6.832 0 0 1-2.638-5.372c-.017-3.73 2.982-6.832 6.712-6.918a6.875 6.875 0 0 1 4.408 12.28 2.08 2.08 0 0 0-.807 1.642v.516a.688.688 0 0 1-.688.688h-5.5a.688.688 0 0 1-.687-.688v-.516a2.097 2.097 0 0 0-.8-1.633v0Z" />
                 </svg>
                 <div class="flex-1">
-                  123
+                  {{ task.hint }}
                 </div>
               </div>
-              <div class="ml-16 pt-2 pb-4 flex items-center">
+              <div v-if="task.answer" class="ml-16 pt-2 pb-4 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 mr-4" fill="none" viewBox="0 0 28 28">
                   <rect width="28" height="28" fill="#2EB774" rx="3" />
                   <path fill="#fff"
                     d="M8.445 14.668a.9.9 0 1 0-1.303 1.242l3.573 3.745a.9.9 0 0 0 1.335-.036L20.64 9.582a.9.9 0 0 0-1.367-1.17l-7.656 8.944a.4.4 0 0 1-.594.016l-2.58-2.704Z" />
                 </svg>
                 <div class="flex-1">
-                  123
+                  {{ task.answer }}
                 </div>
               </div>
             </div>
@@ -198,14 +208,36 @@
 </template>
 
 <script setup>
-import Notice from '@/components/Partials/Notice.vue';
-import { ref, computed, onMounted } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import Notice from '@/components/Partials/Notice.vue'
+import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { Collapse } from 'vue-collapsed'
-import { activity, submitAnswer, getHint } from '@/api/activity';
+import { activity, submitAnswer, getHint } from '@/api/activity'
 
 const route = useRoute()
 const router = useRouter()
+
+const now = ref(new Date())
+const activityData = ref({})
+const playerData = ref({})
+const teamTask = ref([])
+const notifyData = ref('')
+const start = computed(() => {
+  return new Date(activityData.value.competition_start_datetime) < new Date(now.value);
+})
+const activityIntervalId = ref(null)
+const timeComing = ref(null)
+const timeStart = () => {
+  if (start.value) {
+    window.clearInterval(timeComing.value);
+    activityIntervalId.value = window.setInterval(async () => {
+      await getActivity();
+    }, 10000);
+  } else {
+    console.log('比賽時間未到');
+  }
+}
+timeComing.value = window.setInterval(timeStart, 1000);
 
 const show = ref(false)
 const answer = ref('')
@@ -223,21 +255,17 @@ const isInfoCollapse = ref(true)
 const awardsImg = (index) => {
   switch (index) {
     case 1:
-      return new URL(`@/assets/images/award-1.png`, import.meta.url).href;
+      return new URL(`@/assets/images/award-1.png`, import.meta.url).href
     case 2:
-      return new URL(`@/assets/images/award-2.png`, import.meta.url).href;
+      return new URL(`@/assets/images/award-2.png`, import.meta.url).href
     case 3:
-      return new URL(`@/assets/images/award-3.png`, import.meta.url).href;
+      return new URL(`@/assets/images/award-3.png`, import.meta.url).href
     default:
-      break;
+      break
   }
 }
 
 
-const activityData = ref({})
-const playerData = ref({})
-const teamTask = ref([])
-const notifyData = ref('')
 
 const teamTaskSort = computed(() => {
   const teamTaskDataCopy = teamTask.value
@@ -245,7 +273,7 @@ const teamTaskSort = computed(() => {
 })
 const teamList = computed(() => {
   const activityDataCopy = activityData.value
-  return activityDataCopy?.team_list?.sort((a, b) => (Number(b.total_score) - Number(a.total_score)))
+  return activityDataCopy?.team_list?.sort((a, b) => Number(b.total_score) - Number(a.total_score))
 })
 
 const getActivity = async () => {
@@ -253,7 +281,7 @@ const getActivity = async () => {
   try {
     const { data } = await activity(activityId)
     if (data.status === 'success') {
-      const { activity, player, team_task, notify } = data.response;
+      const { activity, player, team_task, notify } = data.response
       activityData.value = activity
       playerData.value = player
       teamTask.value = team_task
@@ -264,8 +292,6 @@ const getActivity = async () => {
   }
 }
 
-
-
 const taskData = ref({})
 const getHintFun = (task) => {
   if (task.answer) return
@@ -275,206 +301,70 @@ const getHintFun = (task) => {
 const confirmHint = async () => {
   try {
     show.value = false
-    const { data } = await getHint(taskData.value.task_id);
+    const { data } = await getHint(taskData.value.task_id)
     if (data.status === 'success' && data.response) {
       getActivity()
     } else if (data.code === 4010) {
       router.go(-1)
     } else {
-      throw new Error(data.message);
+      throw new Error(data.message)
     }
   } catch (error) {
-    console.log(error);
+    console.log(error)
   } finally {
     taskData.value = {}
   }
 }
 const submitAnswerFun = async () => {
   try {
-    if (teamTask.value.length === 0) return;
-    const { activityId } = route.params;
+    if (teamTask.value.length === 0) return
+    const { activityId } = route.params
     if ((answer.value ?? '') !== '') {
-      const formData = new FormData();
-      formData.append('answer', answer.value);
-      const { data } = await submitAnswer(activityId, formData);
+      const formData = new FormData()
+      formData.append('answer', answer.value)
+      const { data } = await submitAnswer(activityId, formData)
       if (data.status && data.response) {
-        answer.value = '';
-        getActivity();
+        answer.value = ''
+        getActivity()
       } else if (data.code === 4010) {
-        router.go(-1);
+        router.go(-1)
       } else {
-        throw new Error(data.message);
+        throw new Error(data.message)
       }
     } else {
       // eslint-disable-next-line no-alert
-      alert('請先輸入答案');
+      alert('請先輸入答案')
     }
   } catch (error) {
-    console.log(error);
+    console.log(error)
   }
 }
-const start = computed(() => {
-  return true
-})
 
 onMounted(async () => {
   await getActivity()
 })
-</script>
 
-<script>
-// import Notice from '@/components/Partials/Notice.vue';
-// import { activity, submitAnswer, Fun } from '@/api/activity';
+const stopWatch = watch(() => activityData.value.activity_start_datetime, (newValue, oldValue) => {
+  console.log(newValue, oldValue)
+  const now = new Date();
+  if (new Date(newValue) < now) {
+    console.log('比賽時間未到');
+  } else {
+    activityIntervalId.value = window.setInterval(async () => {
+      await getActivity();
+    }, 10000);
+  }
+})
 
-// export default {
-// components: {
-//   Notice,
-// },
-// data() {
-//   return {
-//     activity: {},
-//     player: {},
-//     teamTask: [],
-//     taskData: {},
-//     answer: '',
-//     timeComing: null,
-//     activityIntervalId: null,
-//     notify: '',
-//     show: false,
-//     now: new Date(),
-//   };
-// },
-// computed: {
-//   teamTaskSort({ teamTask }) {
-//     return teamTask.sort((a, b) => a.position - b.position) ?? [];
-//   },
-//   start({ activity, now }) {
-//     return new Date(activity.competition_start_datetime) < new Date(now);
-//   },
-//   teamList({ activity }) {
-//     return activity.team_list.sort((a, b) => Number(b.total_score) - Number(a.total_score)) ?? [];
-//   },
-// },
-// watch: {
-//   'activity.activity_start_datetime': {
-//     async handler(val) {
-//       const now = new Date();
-//       if (new Date(val) < now) {
-//         console.log('比賽時間未到');
-//       } else {
-//         this.activityIntervalId = window.setInterval(async () => {
-//           await this.getActivity();
-//         }, 10000);
-//       }
-//       // console.log(val, this);
-//       // if (val === 'complete') {
-//       //   this.$router.go(-1);
-//       // }
-//     },
-//   },
-// },
-//   async mounted() {
-//     await this.getActivity();
-//     this.timeComing = window.setInterval(this.timeStart, 1000);
-//   },
-//   beforeUnmount() {
-//     window.clearInterval(this.timeComing);
-//     window.clearInterval(this.activityIntervalId);
-//   },
-//   methods: {
-//     timeStart() {
-//       if (this.start) {
-//         window.clearInterval(this.timeComing);
-//         this.activityIntervalId = window.setInterval(async () => {
-//           await this.getActivity();
-//         }, 10000);
-//       } else {
-//         console.log('比賽時間未到');
-//       }
-//     },
-//     awardsImg(index) {
-//       switch (index) {
-//         case 1:
-//           return new URL(`@/assets/images/award-1.png`, import.meta.url).href;
-//         case 2:
-//           return new URL(`@/assets/images/award-2.png`, import.meta.url).href;
-//         case 3:
-//           return new URL(`@/assets/images/award-3.png`, import.meta.url).href;
-//         default:
-//           break;
-//       }
-//     },
-//     async getActivity() {
-//       // const { activityId } = this.$route.params;
-//       // try {
-//       //   const { data } = await activity(activityId);
-//       //   console.log(data);
-//       //   if (data.status === 'success') {
-//       //     const { activity, player, team_task, notify } = data.response;
-//       //     this.activity = activity;
-//       //     this.player = player;
-//       //     this.teamTask = team_task;
-//       //     this.notify = notify;
-//       //   } else if (data.code === 4010) {
-//       //     this.$router.go(-1);
-//       //   }
-//       // } catch (error) {
-//       //   console.log(error);
-//       // }
-//     },
-//     async Fun(task) {
-//       if (task.answer) return;
-//       this.taskData = task;
-//       this.show = true;
-//     },
-//     async confirmHint() {
-//       // try {
-//       //   this.show = false;
-//       //   const { data } = await Fun(this.taskData.task_id);
-//       //   if (data.status === 'success' && data.response) {
-//       //     this.getActivity();
-//       //   } else if (data.code === 4010) {
-//       //     this.$router.go(-1);
-//       //   } else {
-//       //     throw new Error(data.message);
-//       //   }
-//       // } catch (error) {
-//       //   console.log(error);
-//       // } finally {
-//       //   this.taskData = {};
-//       // }
-//     },
-//     async submitAnswer() {
-//       try {
-//         if (this.teamTask.length === 0) return;
-//         const { activityId } = this.$route.params;
-//         if ((this.answer ?? '') !== '') {
-//           const formData = new FormData();
-//           formData.append('answer', this.answer);
-//           const { data } = await submitAnswer(activityId, formData);
-//           if (data.status && data.response) {
-//             this.answer = '';
-//             this.getActivity();
-//           } else if (data.code === 4010) {
-//             this.$router.go(-1);
-//           } else {
-//             throw new Error(data.message);
-//           }
-//         } else {
-//           // eslint-disable-next-line no-alert
-//           alert('請先輸入答案');
-//         }
-//       } catch (error) {
-//         console.log(error);
-//       }
-//     },
-//   },
-// };
+onUnmounted(() => {
+  stopWatch()
+  window.clearInterval(timeComing.value);
+  window.clearInterval(activityIntervalId.value);
+})
 </script>
 
 <style lang="scss" scoped>
 .countdown-style {
-
   :deep(.flip-clock__piece) {
     @apply bg-main text-white min-w-24 rounded-3xl px-2 py-3;
   }
