@@ -1,5 +1,7 @@
 <template>
-	<div class="flex-1 bg-[url(@/assets/images/login-bg.png)] bg-center bg-cover bg-no-repeat"></div>
+	<div
+		class="flex-1 bg-[url(@/assets/images/login-bg.png),url(@/assets/images/login-bg-center.jpg)] bg-center [background-size:cover,409px_473px] bg-no-repeat">
+	</div>
 	<div class="flex-1 flex justify-center items-center">
 		<div>
 			<h1 class="text-[28px] mb-10 text-center font-semibold">

@@ -17,8 +17,11 @@ app.use(Countdown)
 
 const user = useUserStore()
 
-router.beforeEach((to, from) => {
+router.beforeEach((to) => {
   if (to.path === '/login' || to.path.startsWith('/preview')) {
+    if (user.token !== undefined) {
+      return { path: '/' }
+    }
     return true
   } else if (user.token !== undefined) {
     return true

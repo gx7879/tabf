@@ -1,10 +1,10 @@
 <template>
   <div class="flex gap-10 p-10 max-w-[1440px] mx-auto">
     <div class="w-[330px]">
-      <h2 class="text-2xl font-semibold text-font-black">2024 第一季數位鑑識競賽</h2>
-      <span class="text-sm mb-3 block font-semibold text-font-black">2023/3/31 (五) 14:00 ~ 18:00，競賽倒數</span>
-      <div class="bg-white py-4 mb-10 flex">
-        <vue3-flip-countdown :flipAnimation="false" :showDays="false"
+      <h2 class="text-2xl font-semibold text-font-black">{{ activityData.name }}</h2>
+      <span class="text-sm mb-3 block font-semibold text-font-black">{{ activityData.description }}</span>
+      <div v-if="activityData.competition_end_datetime" class="bg-white py-4 mb-10 flex">
+        <vue3-flip-countdown :deadline="activityData.competition_end_datetime" :flipAnimation="false" :showDays="false"
           :labels="{ hours: 'HOURS', minutes: 'MINUTES', seconds: 'SECONDS' }" mainColor="#fff" labelColor="#fff"
           countdownSize="40px" labelSize="16px" class="countdown-style" @timeElapsed="$router.go(-1)" />
       </div>
@@ -18,30 +18,32 @@
         </template>
         <template v-else>
           <div class="space-y-1">
-            <div v-for="i in 5" :key="i" class="flex items-center border-b border-light-gray last:border-0 px-3">
+            <div v-for="(list, index) of teamList" :key="list.team_id"
+              class="flex items-center border-b border-light-gray last:border-0 px-3">
               <div class="rounded-xl bg-white w-[42px] flex justify-center items-center">
-                <template v-if="i > 3">
-                  {{ i }}
+                <template v-if="(index + 1) > 3">
+                  {{ index + 1 }}
                 </template>
                 <template v-else>
-                  <img :src="awardsImg(i)" alt="" />
+                  <img :src="awardsImg(index + 1)" alt="" />
                 </template>
               </div>
               <div class="flex-1 ml-2">
-                <div class="flex items-center cursor-pointer" @click="toggleCollapse(i)">
+                <div class="flex items-center cursor-pointer" @click="toggleCollapse(index + 1)">
                   <div
                     class="rounded-xl bg-white px-4 pl-0 py-2 flex flex-1 items-center gap-2 justify-between font-semibold">
-                    <div class="text-primary-medium text-sm">123</div>
+                    <div class="text-primary-medium text-sm">{{ list.name }}</div>
                     <div class="text-lg flex-shrink-0 basis-auto text-main">
-                      123 分
+                      {{ list.total_score ?? 0 }} 分
                     </div>
                   </div>
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                    stroke="currentColor" class="w-6 h-6 text-[#ccc]" :class="{ 'rotate-180': isRankCollapse === i }">
+                    stroke="currentColor" class="w-6 h-6 text-[#ccc]"
+                    :class="{ 'rotate-180': isRankCollapse === (index + 1) }">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
                   </svg>
                 </div>
-                <Collapse :when="isRankCollapse === i">
+                <Collapse :when="isRankCollapse === (index + 1)">
                   <div class="grid grid-cols-5 text-center border-t border-light-gray py-2 *:h-[38px] *:leading-[38px]">
                     <div
                       class="rounded-full col-span-5 grid grid-flow-col auto-cols-fr bg-gradient-to-r from-[#FFAC34] to-[#FFDC06] border-[3px] border-light-gray !h-auto">
@@ -76,45 +78,44 @@
         @click="isInfoCollapse = !isInfoCollapse">
         123
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
-          class="w-6 h-6" :class="{ 'rotate-180': isRankCollapse === i }">
+          class="w-6 h-6" :class="{ 'rotate-180': isInfoCollapse }">
           <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
         </svg>
       </div>
       <Collapse :when="isInfoCollapse">
         <div class="rounded-b-lg text-sm font-medium bg-white space-y-1">
           <div class="flex justify-between last:border-0 border-b border-light-gray px-3 py-4">
-            <div>VPN IP位址</div>
-            <span>123</span>
+            <div>VM 登入帳號</div>
+            <span>{{ playerData.vm_account }}</span>
+          </div>
+          <div class="flex justify-between last:border-0 border-b border-light-gray px-3 py-4">
+            <div>VM 登入密碼</div>
+            <span>{{ playerData.vm_password }}</span>
+          </div>
+          <div class="flex justify-between last:border-0 border-b border-light-gray px-3 py-4">
+            <div>VM IP位置</div>
+            <span>{{ playerData.vm_ip }}</span>
           </div>
           <div class="flex justify-between last:border-0 border-b border-light-gray px-3 py-4">
             <div>VPN 登入帳號</div>
-            <span>123</span>
+            <span>{{ playerData.vpn_account }}</span>
           </div>
           <div class="flex justify-between last:border-0 border-b border-light-gray px-3 py-4">
             <div>VPN 登入密碼</div>
-            <span>123</span>
+            <span>{{ playerData.vpn_password }}</span>
           </div>
           <div class="flex justify-between last:border-0 border-b border-light-gray px-3 py-4">
-            <div>虛擬機 IP位址</div>
-            <span>
-              123
-            </span>
-          </div>
-          <div class="flex justify-between last:border-0 border-b border-light-gray px-3 py-4">
-            <div>Kali Linux 用戶帳號</div>
-            <span>kail</span>
-          </div>
-          <div class="flex justify-between last:border-0 border-b border-light-gray px-3 py-4">
-            <div>Kali Linux 用戶密碼</div>
-            <span>kail</span>
+            <div>VPN IP位置</div>
+            <span>{{ playerData.vpn_ip }}</span>
           </div>
         </div>
       </Collapse>
     </div>
     <div class="flex-1">
-      <div class="px-3 py-4 bg-notice-blue rounded-md mb-3 border border-notice-border-blue flex items-start gap-x-2">
-        <img src="@/assets/images/notice-icon.png"
-          alt="">公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告公告
+      <div v-if="notifyData"
+        class="px-3 py-4 bg-notice-blue rounded-md mb-3 border border-notice-border-blue flex items-start gap-x-2">
+        <img src="@/assets/images/notice-icon.png" alt="">
+        {{ notifyData }}
       </div>
       <div class="text-2xl font-semibold mb-[5px] text-font-black">任務作答區</div>
       <span class="text-sm text-font-black block mb-3">
@@ -127,9 +128,9 @@
             class="rounded pl-3 flex-1 focus:border-primary-dark focus:ring-primary-dark"
             :class="{ 'bg-white border border-[#DEE2EB]': start, 'bg-light-gray': !start }" />
           <button type="button" class="rounded px-3 text-center py-3" :class="{
-          'bg-white text-font-black': start,
-          'bg-black/20 cursor-default text-white': !start,
-        }" @click="submitAnswer">
+        'bg-white text-font-black': start,
+        'bg-black/20 cursor-default text-white': !start,
+      }" @click="submitAnswerFun">
             提交答案
           </button>
         </div>
@@ -140,14 +141,14 @@
           </div>
         </div>
         <div v-else class="space-y-1">
-          <div class="rounded-xl bg-white">
+          <div v-for="task of teamTaskSort" :key="task.task_id" class="rounded-xl bg-white">
             <div class="flex items-center px-6 py-4 space-x-4">
-              <div class="w-6 h-6 rounded bg-main text-white text-center leading-6">1</div>
+              <div class="w-6 h-6 rounded bg-main text-white text-center leading-6">{{ task.position }}</div>
               <div class="flex-1">
-                123
+                {{ task.question }}
               </div>
               <svg xmlns="http://www.w3.org/2000/svg" class="w-7 h-7 cursor-pointer" fill="none" viewBox="0 0 28 28"
-                @click="getHint(task)">
+                @click="getHintFun(task)">
                 <rect width="28" height="28" fill="#FE6418" rx="3" />
                 <path stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                   d="M10.563 22.938h6.874M14 20.188v-4.813M11.25 12.625l2.75 2.75 2.75-2.75" />
@@ -199,15 +200,16 @@
 <script setup>
 import Notice from '@/components/Partials/Notice.vue';
 import { ref, computed, onMounted } from 'vue';
-import { useRoute } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { Collapse } from 'vue-collapsed'
 import { activity, submitAnswer, getHint } from '@/api/activity';
 
 const route = useRoute()
+const router = useRouter()
 
 const show = ref(false)
 const answer = ref('')
-const isRankCollapse = ref(null)
+const isRankCollapse = ref(1)
 const toggleCollapse = (i) => {
   if (!isRankCollapse.value || (isRankCollapse.value && isRankCollapse.value !== i)) {
     isRankCollapse.value = i
@@ -216,7 +218,7 @@ const toggleCollapse = (i) => {
   }
 }
 
-const isInfoCollapse = ref(false)
+const isInfoCollapse = ref(true)
 
 const awardsImg = (index) => {
   switch (index) {
@@ -230,29 +232,90 @@ const awardsImg = (index) => {
       break;
   }
 }
-const confirmHint = () => { }
-const start = computed(() => {
-  return true
-})
+
 
 const activityData = ref({})
+const playerData = ref({})
+const teamTask = ref([])
+const notifyData = ref('')
+
+const teamTaskSort = computed(() => {
+  const teamTaskDataCopy = teamTask.value
+  return teamTaskDataCopy.sort((a, b) => a.position - b.position) ?? []
+})
+const teamList = computed(() => {
+  const activityDataCopy = activityData.value
+  return activityDataCopy?.team_list?.sort((a, b) => (Number(b.total_score) - Number(a.total_score)))
+})
 
 const getActivity = async () => {
-  console.log('123')
   const { activityId } = route.params
   try {
     const { data } = await activity(activityId)
     if (data.status === 'success') {
       const { activity, player, team_task, notify } = data.response;
-      activityData.value.activity = activity
-      activityData.value.player = player
-      activityData.value.teamTask = team_task
-      activityData.value.notify = notify
+      activityData.value = activity
+      playerData.value = player
+      teamTask.value = team_task
+      notifyData.value = notify
     }
   } catch (error) {
     console.log(error)
   }
 }
+
+
+
+const taskData = ref({})
+const getHintFun = (task) => {
+  if (task.answer) return
+  taskData.value = task
+  show.value = true
+}
+const confirmHint = async () => {
+  try {
+    show.value = false
+    const { data } = await getHint(taskData.value.task_id);
+    if (data.status === 'success' && data.response) {
+      getActivity()
+    } else if (data.code === 4010) {
+      router.go(-1)
+    } else {
+      throw new Error(data.message);
+    }
+  } catch (error) {
+    console.log(error);
+  } finally {
+    taskData.value = {}
+  }
+}
+const submitAnswerFun = async () => {
+  try {
+    if (teamTask.value.length === 0) return;
+    const { activityId } = route.params;
+    if ((answer.value ?? '') !== '') {
+      const formData = new FormData();
+      formData.append('answer', answer.value);
+      const { data } = await submitAnswer(activityId, formData);
+      if (data.status && data.response) {
+        answer.value = '';
+        getActivity();
+      } else if (data.code === 4010) {
+        router.go(-1);
+      } else {
+        throw new Error(data.message);
+      }
+    } else {
+      // eslint-disable-next-line no-alert
+      alert('請先輸入答案');
+    }
+  } catch (error) {
+    console.log(error);
+  }
+}
+const start = computed(() => {
+  return true
+})
 
 onMounted(async () => {
   await getActivity()
@@ -261,7 +324,7 @@ onMounted(async () => {
 
 <script>
 // import Notice from '@/components/Partials/Notice.vue';
-// import { activity, submitAnswer, getHint } from '@/api/activity';
+// import { activity, submitAnswer, Fun } from '@/api/activity';
 
 // export default {
 // components: {
@@ -359,7 +422,7 @@ onMounted(async () => {
 //       //   console.log(error);
 //       // }
 //     },
-//     async getHint(task) {
+//     async Fun(task) {
 //       if (task.answer) return;
 //       this.taskData = task;
 //       this.show = true;
@@ -367,7 +430,7 @@ onMounted(async () => {
 //     async confirmHint() {
 //       // try {
 //       //   this.show = false;
-//       //   const { data } = await getHint(this.taskData.task_id);
+//       //   const { data } = await Fun(this.taskData.task_id);
 //       //   if (data.status === 'success' && data.response) {
 //       //     this.getActivity();
 //       //   } else if (data.code === 4010) {
