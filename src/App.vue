@@ -1,14 +1,15 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
 import { useUserStore } from "@/stores/user";
 import { useRouter } from 'vue-router';
-// import { Locale } from 'vue-i18n'
+import { setLocale } from '@vee-validate/i18n';
 import { useI18n } from "vue-i18n";
 import { ref, computed, onMounted } from 'vue';
+import { storeToRefs } from "pinia";
 const { locale } = useI18n();
 const router = useRouter()
 const user = useUserStore()
 const { signOutFun } = user
+const { lang } = storeToRefs(user)
 const signOut = async () => {
   const { data } = await signOutFun()
   if (data.status === 'success') {
@@ -20,43 +21,45 @@ const languages = ref([
   { value: '繁體中文', key: 'zh_TW' },
   { value: 'English', key: 'en' },
 ])
-const lang = ref('zh_TW')
+const langData = ref('zh_TW')
 const currentLang = computed(() => {
   const array = languages.value.reduce((prev, lang) => {
     const obj = { [`${lang.key}`]: lang.value };
     return { ...prev, ...obj };
   }, {});
-  return array[lang.value]
+  return array[langData.value]
 })
 const show = ref(false)
-const toggleLangSelect = ()=> {
+const toggleLangSelect = () => {
   show.value = !show.value
 }
-const langSelectHide = ()=> {
+const langSelectHide = () => {
   show.value = false
 }
 
 locale.value = 'en'
 
 const setLang = (langVal) => {
-  lang.value = langVal.key
+  langData.value = langVal.key
   locale.value = langVal.key
   localStorage.setItem('locale', langVal.key);
-  // if (langVal.key === 'zh_TW') {
-  //   locale.value = 'zh_TW'
-  // } else {
-  //   locale.value = 'en'
-  // }
+  lang.value = langVal.key
+  if (langVal.key === 'zh_TW') {
+    setLocale('zh_TW')
+  } else {
+    setLocale('en')
+  }
 }
 
-onMounted(()=>{
-  lang.value = localStorage.getItem('locale') ?? 'zh_TW';
-  locale.value = lang.value
-  // if (lang.value === 'zh_TW') {
-  //   locale.value = 'zh_TW'
-  // } else {
-  //   locale.value = 'en'
-  // }
+onMounted(() => {
+  langData.value = localStorage.getItem('locale') ?? 'zh_TW';
+  locale.value = langData.value
+  lang.value = langData.value
+  if (langData.value === 'zh_TW') {
+    setLocale('zh_TW')
+  } else {
+    setLocale('en')
+  }
 })
 </script>
 

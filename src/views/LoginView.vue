@@ -8,67 +8,72 @@
 				{{ $t('MDR') }}<span class="block text-[34px]" v-html="$t('PTaDFC')"></span>
 			</h1>
 			<div class="">
-				<form @submit="onSubmit">
+				<Form @submit="onSubmit">
 					<label class="block mb-3.5">
 						<div class="relative">
 							<div class="relative">
 								<div class="absolute inset-y-0 flex items-center pl-3">
 									<img src="@/assets/images/account-icon.png" alt="" />
 								</div>
-								<input v-model="email" v-bind="emailAttrs" type="email" name="email"
+								<Field :name="$t('account')" type="email" rules="required|email"
+									:placeholder="$t('account_placeholder')"
 									class="w-full pl-10 border border-light-gray focus:border-light-gray focus:shadow-none focus:ring-0 rounded px-4 py-3 placeholder:text-[#ccc] placeholder:font-medium"
-									:placeholder="$t('account_placeholder')" />
+									:class="{ 'placeholder:text-sm': lang === 'en' }" />
 							</div>
-							<span v-if="errors.email && meta.touched" class="text-sm text-red-medium">{{ errors.email
-								}}</span>
+							<ErrorMessage :name="$t('account')" class="text-sm text-red-medium" />
 						</div>
 					</label>
 					<label class="block mb-8">
 						<div class="relative">
-							<div class="absolute inset-y-0 flex items-center pl-3">
-								<img src="@/assets/images/password-icon.png" alt="" />
+							<div class="relative">
+								<div class="absolute inset-y-0 flex items-center pl-3">
+									<img src="@/assets/images/password-icon.png" alt="" />
+								</div>
+								<Field :name="$t('password')" type="password" rules="required"
+									:placeholder="$t('password_placeholder')"
+									class="w-full pl-10 border border-light-gray focus:border-light-gray focus:shadow-none focus:ring-0 rounded px-4 py-3 placeholder:text-[#ccc] placeholder:font-medium"
+									:class="{ 'placeholder:text-sm': lang === 'en' }" />
 							</div>
-							<input v-model="password" type="password" v-bind="passwordAttrs" name="password"
-								class="w-full pl-10 border border-light-gray focus:border-light-gray focus:shadow-none focus:ring-0 rounded px-4 py-3 placeholder:text-[#ccc] placeholder:font-medium"
-								:placeholder="$t('password_placeholder')" />
-							<span v-if="errors.password && meta.touched" class="text-sm text-red-medium">{{
-					errors.password }}</span>
+							<ErrorMessage :name="$t('password')" class="text-sm text-red-medium" />
 						</div>
 					</label>
-					<button type="submit" :disabled="isSubmitting"
-						class="bg-main py-3 w-full rounded text-white hover:bg-primary-dark">
+					<button type="submit" class="bg-main py-3 w-full rounded text-white hover:bg-primary-dark">
 						{{ $t('login') }}
 					</button>
-				</form>
+				</Form>
 			</div>
 		</div>
 	</div>
 </template>
 
 <script setup>
-// import { ref } from "vue";
 import { useRouter } from "vue-router";
-import { useForm } from 'vee-validate';
-import * as yup from 'yup';
+import { Form, Field, ErrorMessage, configure, defineRule } from 'vee-validate';
+import { required, email } from '@vee-validate/rules';
+import { localize } from '@vee-validate/i18n';
+import en from '@vee-validate/i18n/dist/locale/en.json';
+import zh_TW from '@vee-validate/i18n/dist/locale/zh_TW.json';
 import { useUserStore } from "@/stores/user";
-// import { storeToRefs } from "pinia";
+import { storeToRefs } from "pinia";
+
+defineRule('required', required);
+defineRule('email', email);
+
+configure({
+	generateMessage: localize({
+		en,
+		zh_TW,
+	}),
+});
+
 
 const router = useRouter()
 
 const user = useUserStore()
 const { loginFun } = user
+const { lang } = storeToRefs(user)
 
-const { errors, meta, defineField, handleSubmit, isSubmitting } = useForm({
-	validationSchema: yup.object({
-		email: yup.string().required().email(),
-		password: yup.string().required()
-	})
-});
-const [email, emailAttrs] = defineField('email')
-const [password, passwordAttrs] = defineField('password')
-
-const onSubmit = handleSubmit(async (values) => {
-	// alert(JSON.stringify(values, null, 2))
+const onSubmit = async (values) => {
 	try {
 		const formData = new FormData();
 		formData.append('email', values.email);
@@ -80,13 +85,37 @@ const onSubmit = handleSubmit(async (values) => {
 	} catch (error) {
 		console.log(error)
 	}
+}
 
-}, ({ errors }) => {
-	console.log(errors)
-	const firstError = Object.keys(errors)[0];
-	const el = document.querySelector(`[name="${firstError}"]`);
-	el.focus()
-})
+// const { errors, meta, defineField, handleSubmit, isSubmitting } = useForm({
+// 	validationSchema: yup.object({
+// 		email: yup.string().required().email(),
+// 		password: yup.string().required()
+// 	})
+// });
+// const [email, emailAttrs] = defineField('email')
+// const [password, passwordAttrs] = defineField('password')
+
+// const onSubmit = handleSubmit(async (values) => {
+// 	// alert(JSON.stringify(values, null, 2))
+// 	try {
+// 		const formData = new FormData();
+// 		formData.append('email', values.email);
+// 		formData.append('password', values.password);
+// 		const data = await loginFun(formData)
+// 		if (data.status === 'success') {
+// 			router.push('/');
+// 		}
+// 	} catch (error) {
+// 		console.log(error)
+// 	}
+
+// }, ({ errors }) => {
+// 	console.log(errors)
+// 	const firstError = Object.keys(errors)[0];
+// 	const el = document.querySelector(`[name="${firstError}"]`);
+// 	el.focus()
+// })
 
 </script>
 

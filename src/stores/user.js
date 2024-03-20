@@ -3,7 +3,9 @@ import { defineStore } from 'pinia'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { login, signOut } from '@/api/login';
 
+
 export const useUserStore = defineStore('user', () => {
+  const lang = ref('zh_TW')
   const token = ref(getToken())
   const loginFun = (accountInfo) => {
     return new Promise((resolve, reject) => {
@@ -31,6 +33,7 @@ export const useUserStore = defineStore('user', () => {
   return {
     token,
     loginFun,
-    signOutFun
+    signOutFun,
+    lang
   }
 })
