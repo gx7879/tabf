@@ -3,7 +3,7 @@
     "hello": "hello world"
   },
   "MDR": "Multi Digi Range(MDR)",
-  "PTaDFC": "Penetration Testing and <br> Digital Forensics Competition",
+  "PTaDFC": "Penetration Testing and \n Digital Forensics Competition",
   "account": "account",
   "password": "password",
   "account_placeholder": "Please enter the account provided by the official.",

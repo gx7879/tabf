@@ -5,7 +5,7 @@
 	<div class="flex-1 flex justify-center items-center">
 		<div>
 			<h1 class="text-[28px] mb-10 text-center font-semibold">
-				{{ $t('MDR') }}<span class="block text-[34px]" v-html="$t('PTaDFC')"></span>
+				{{ $t('MDR') }}<span class="block text-[34px] whitespace-pre-wrap">{{ $t('PTaDFC') }}</span>
 			</h1>
 			<div class="">
 				<Form @submit="onSubmit">
@@ -29,8 +29,7 @@
 								<div class="absolute inset-y-0 flex items-center pl-3">
 									<img src="@/assets/images/password-icon.png" alt="" />
 								</div>
-								<Field :name="$t('password')" type="password" rules="required"
-									:placeholder="$t('password_placeholder')"
+								<Field :name="$t('password')" type="password" rules="required" :placeholder="$t('password_placeholder')"
 									class="w-full pl-10 border border-light-gray focus:border-light-gray focus:shadow-none focus:ring-0 rounded px-4 py-3 placeholder:text-[#ccc] placeholder:font-medium"
 									:class="{ 'placeholder:text-sm': lang === 'en' }" />
 							</div>
@@ -55,7 +54,8 @@ import en from '@vee-validate/i18n/dist/locale/en.json';
 import zh_TW from '@vee-validate/i18n/dist/locale/zh_TW.json';
 import { useUserStore } from "@/stores/user";
 import { storeToRefs } from "pinia";
-
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 defineRule('required', required);
 defineRule('email', email);
 
@@ -75,9 +75,12 @@ const { lang } = storeToRefs(user)
 
 const onSubmit = async (values) => {
 	try {
+		console.log(values)
+		const emailKey = t('account')
+		const passwordKey = t('password')
 		const formData = new FormData();
-		formData.append('email', values.email);
-		formData.append('password', values.password);
+		formData.append('email', values[emailKey]);
+		formData.append('password', values[passwordKey]);
 		const data = await loginFun(formData)
 		if (data.status === 'success') {
 			router.push('/');
