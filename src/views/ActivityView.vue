@@ -34,7 +34,7 @@
                 </template>
               </div>
               <div class="flex-1 ml-2">
-                <div class="flex items-center cursor-pointer" @click="toggleCollapse(index + 1)">
+                <div class="flex items-center" @click="toggleCollapse(index + 1)">
                   <div
                     class="rounded-xl bg-white px-4 pl-0 py-2 flex flex-1 items-center gap-2 justify-between font-semibold">
                     <div class="text-primary-medium text-sm">{{ list.name }}</div>
@@ -42,13 +42,13 @@
                       {{ list.total_score ?? 0 }} 分
                     </div>
                   </div>
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
+                  <!-- <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                     stroke="currentColor" class="w-6 h-6 text-[#ccc]"
                     :class="{ 'rotate-180': isRankCollapse === (index + 1) }">
                     <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
-                  </svg>
+                  </svg> -->
                 </div>
-                <Collapse :when="isRankCollapse === (index + 1)">
+                <!-- <Collapse :when="isRankCollapse === (index + 1)">
                   <div class="grid grid-cols-5 text-center border-t border-light-gray py-2 *:h-[38px] *:leading-[38px]">
                     <div
                       class="rounded-full col-span-5 grid grid-flow-col auto-cols-fr bg-gradient-to-r from-[#FFAC34] to-[#FFDC06] border-[3px] border-light-gray !h-auto">
@@ -71,7 +71,7 @@
                     <div>14</div>
                     <div>15</div>
                   </div>
-                </Collapse>
+                </Collapse> -->
               </div>
             </div>
           </div>
@@ -209,7 +209,7 @@
 
 <script setup>
 import Notice from '@/components/Partials/Notice.vue'
-import { ref, computed, onMounted, watch, onUnmounted } from 'vue'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Collapse } from 'vue-collapsed'
 import { activity, submitAnswer, getHint } from '@/api/activity'
@@ -239,7 +239,6 @@ const timeStart = () => {
     console.log(t('competitionnotstartedyet'));
   }
 }
-timeComing.value = window.setInterval(timeStart, 1000);
 
 const show = ref(false)
 const answer = ref('')
@@ -344,22 +343,22 @@ const submitAnswerFun = async () => {
 
 onMounted(async () => {
   await getActivity()
+  timeComing.value = window.setInterval(timeStart, 1000);
 })
 
-const stopWatch = watch(() => activityData.value.activity_start_datetime, (newValue, oldValue) => {
-  console.log(newValue, oldValue)
-  const now = new Date();
-  if (new Date(newValue) < now) {
-    console.log(t('competitionnotstartedyet'));
-  } else {
-    activityIntervalId.value = window.setInterval(async () => {
-      await getActivity();
-    }, 10000);
-  }
-})
+// const stopWatch = watch(() => activityData.value.activity_start_datetime, (newValue, oldValue) => {
+//   const now = new Date();
+//   console.log(newValue, oldValue, new Date(newValue) < now)
+//   if (new Date(newValue) < now) {
+//     console.log(t('competitionnotstartedyet'));
+//   } else {
+//     activityIntervalId.value = window.setInterval(async () => {
+//       await getActivity();
+//     }, 10000);
+//   }
+// })
 
 onUnmounted(() => {
-  stopWatch()
   window.clearInterval(timeComing.value);
   window.clearInterval(activityIntervalId.value);
 })
