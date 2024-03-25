@@ -72,8 +72,8 @@ onMounted(() => {
     </div>
     <div class="flex items-center space-x-4 text-sm font-medium">
       <ul class="flex items-center  space-x-4 font-semibold">
-        <li>最新活動</li>
-        <li>個人專區</li>
+        <li><router-link to="/activityList">最新活動</router-link></li>
+        <li><router-link to="/activityList">個人專區</router-link></li>
       </ul>
       <div v-if="user.token" class="hover:border-black/20 rounded px-4 py-3 cursor-pointer" :class="{
       'bg-main text-white': $route.path === '/login',
