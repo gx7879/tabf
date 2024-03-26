@@ -7,6 +7,13 @@ export function activityData(id = '1a54d612-398e-422a-9187-5dd5c3896d69') {
   })
 }
 
+export function activityList() {
+  return request({
+    method: 'get',
+    url: `/api/activity/search`
+  })
+}
+
 export function activity(id) {
   return request({
     method: 'get',
