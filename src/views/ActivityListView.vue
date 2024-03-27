@@ -30,13 +30,14 @@
               </svg>
             </div>
             <div class="space-x-2 flex *:w-11 *:h-11 *:flex *:justify-center *:items-center *:rounded text-sm">
-              <div v-for="page of totalPage" :key="page" class="cursor-pointer hover:bg-main hover:text-white"
+              <div v-for="page of startNumber" :key="page" class="cursor-pointer hover:bg-main hover:text-white"
                 :class="{ 'bg-main text-white': page === currentPage }" @click="pageTo(page)">{{ page }}</div>
               <!-- <div class="cursor-pointer hover:bg-main hover:text-white">2</div>
               <div class="cursor-pointer hover:bg-main hover:text-white">3</div> -->
             </div>
             <div class="w-11 h-11 flex justify-center items-center rounded"
-              :class="{ 'cursor-pointer hover:bg-main hover:text-white': currentPage < totalPage }" @click="pageTo('next')">
+              :class="{ 'cursor-pointer hover:bg-main hover:text-white': currentPage < totalPage }"
+              @click="pageTo('next')">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                 stroke="currentColor" class="w-6 h-6">
                 <path stroke-linecap="round" stroke-linejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
@@ -52,27 +53,35 @@
 <script setup>
 import { onBeforeMount, ref } from 'vue';
 import { activityList } from '@/api/activity'
+import { computed } from 'vue';
 
 const activityData = ref([])
 const currentPage = ref(1)
-const totalPage = ref(1)
+let totalPage = 1
 const getActivityList = async () => {
   try {
     const { data } = await activityList({ page: currentPage.value, limit: 8 });
     console.log(data)
     if (data.status === 'success') {
       activityData.value = data.response.activity_list
-      totalPage.value = data.response.total_page
+      totalPage = data.response.total_page
     }
   } catch (error) {
     console.log(error);
   }
 }
+const startNumber = computed(() => {
+  if (currentPage.value - 2 <= 0) return 1
+  const overNumber = currentPage.value + 2 - totalPage
+  if (overNumber > 0) return currentPage.value - 2 - overNumber
+  return currentPage.value - 2
+})
+
 const pageTo = (page) => {
   if (typeof page === 'string') {
     if (page === 'prev' && currentPage.value > 1) {
       currentPage.value -= 1
-    } else if (page === 'next' && currentPage.value < totalPage.value) {
+    } else if (page === 'next' && currentPage.value < totalPage) {
       currentPage.value += 1
     } else {
       return false
